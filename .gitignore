@@ -1,0 +1,61 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+
+# Environment variables and secrets
+.env
+.env.*
+
+# Logs
+*.log
+logs/
+
+# Python build artifacts
+build/
+dist/
+*.egg-info/
+
+# SQLite or other local dev databases
+*.sqlite
+*.sqlite3
+*.db
+instance/
+
+# VSCode settings
+.vscode/
+
+# Testing and coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.cache/
+coverage.xml
+test-results/
+
+# Mypy, Pyre, and Pylance type checking
+.mypy_cache/
+.dmypy.json
+.pyre/
+*.pyi
+
+# Alembic migrations
+alembic.ini
+migrations/__pycache__/
+migrations/versions/*.pyc
+
+# Docker-related
+*.pid
+*.tar
+docker-compose.override.yml
+
+# Jupyter notebooks
+.ipynb_checkpoints/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
