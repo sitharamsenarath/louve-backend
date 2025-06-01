@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, UniqueConstraint
+from sqlalchemy import Boolean, Column, Integer, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship
 from app.db.base import Base
 
@@ -9,6 +9,7 @@ class CartItem(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
     quantity = Column(Integer, default=1)
+    is_active = Column(Boolean, default=True)
 
     user = relationship("User", back_populates="cart_items")
     product = relationship("Product", back_populates="cart_items")

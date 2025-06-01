@@ -2,3 +2,8 @@ sqlalchemy
 alembic
 dotenv
 psycopg2
+pydantic
+pydantic[email]
+fastapi
+passlib[bcrypt]
+uvicorn[standard]
