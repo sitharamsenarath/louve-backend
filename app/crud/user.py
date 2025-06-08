@@ -18,9 +18,16 @@ class UserCRUD:
         return db.query(User).offset(skip).limit(limit).all()
     
     def create(self, db: Session, user_in: UserCreate) -> User:
-        hashed_password = hash_password(user_in.password)
         user_data = user_in.model_dump(exclude={"password"})
-        user = User(**user_data, password_hash=hashed_password)
+
+        if user_in.password:
+            user_data["password_hash"] = hash_password(user_in.password)
+        else:
+            user_data["password_hash"] = None  # or leave it out if nullable
+
+        user = User(**user_data)
+        print("Final user data to create:", user_data)
+
         db.add(user)
         db.commit()
         db.refresh(user)

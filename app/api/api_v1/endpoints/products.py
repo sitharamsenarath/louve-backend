@@ -9,6 +9,14 @@ from app.dependencies import db
 router = APIRouter()
 service = ProductService()
 
+@router.get("/products", response_model=List[ProductOut])
+def get_all_products(db: Session = Depends(db.get_db)):
+    return service.get_all_products(db)
+
+@router.get("/products/active", response_model=List[ProductOut])
+def get_all_products_active(db: Session = Depends(db.get_db)):
+    return service.get_all_products_active(db)
+
 @router.get("/products/{product_id}", response_model=ProductOut)
 def get_product(product_id: int, db: Session = Depends(db.get_db)):
     product = service.get_product(db, product_id)
@@ -16,9 +24,15 @@ def get_product(product_id: int, db: Session = Depends(db.get_db)):
         raise HTTPException(status_code=404, detail="Product not found")
     return product
 
-@router.get("/products", response_model=List[ProductOut])
-def get_all_products(db: Session = Depends(db.get_db)):
-    return service.get_all_products(db)
+@router.get("/products/bycategory/{category_id}", response_model=List[ProductOut])
+def get_products_by_category(category_id: int, db: Session = Depends(db.get_db)):
+    products = service.get_products_by_category(db, category_id)
+    return products
+
+@router.get("/products/bycategory/active/{category_id}", response_model=List[ProductOut])
+def get_products_by_category_active(category_id: int, db: Session = Depends(db.get_db)):
+    products = service.get_products_by_category_active(db, category_id)
+    return products
 
 @router.post("/products", response_model=ProductOut, status_code=201)
 def create_product(product_in: ProductCreate, db: Session = Depends(db.get_db)):

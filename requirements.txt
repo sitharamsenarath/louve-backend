@@ -7,3 +7,4 @@ pydantic[email]
 fastapi
 passlib[bcrypt]
 uvicorn[standard]
+firebase-admin

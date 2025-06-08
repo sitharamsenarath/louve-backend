@@ -7,8 +7,10 @@ class UserBase(BaseModel):
     name: Optional[str] = None
     is_admin: Optional[bool] = False
 
-class UserCreate(UserBase):
-    password: str  # plain password for creation only
+class UserCreate(BaseModel):
+    email: EmailStr
+    password: Optional[str] = ""
+    name: Optional[str] = ""
 
 class UserUpdate(BaseModel):
     name: Optional[str] = None
