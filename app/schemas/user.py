@@ -16,7 +16,7 @@ class UserCreate(BaseModel):
     email: str
     name: Optional[str] = None
     password: Optional[str] = None  # Firebase users won’t have this
-    provider: Optional[str] = "firebase"
+    provider: Optional[str] = None
 
 class UserUpdate(BaseModel):
     name: Optional[str] = None

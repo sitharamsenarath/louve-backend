@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 
 from app.dependencies.firebase_auth import verify_firebase_token
-from app.models.auth import FirebaseSyncRequest
+from app.schemas.auth import FirebaseSyncRequest
 from app.schemas.user import UserCreate, UserUpdate, UserOut
 from app.services.user import UserService
 from app.dependencies import db

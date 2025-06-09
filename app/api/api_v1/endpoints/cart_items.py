@@ -2,8 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 
-from app.schemas.cart_item import CartItemCreate, CartItemUpdate, CartItemOut
+from app.schemas.cart_item import CartItemCreate, CartItemReceive, CartItemUpdate, CartItemOut
+from app.schemas.order_item import OrderItemCreate
 from app.services.cart_item import CartItemService
+from app.services.user import UserService
 from app.dependencies import db
 
 router = APIRouter()
@@ -21,8 +23,11 @@ def get_user_cart_items(user_id: int, only_active: bool = False, db: Session = D
     return service.get_user_cart_items(db, user_id, only_active)
 
 @router.post("/cart/items", response_model=CartItemOut, status_code=201)
-def add_to_cart(item_in: CartItemCreate, db: Session = Depends(db.get_db)):
-    return service.add_to_cart(db, item_in)
+def add_to_cart(item_in: CartItemReceive, db: Session = Depends(db.get_db)):
+    try:
+        return service.add_to_cart_from_receive(db, item_in)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 @router.put("/cart/items/{item_id}", response_model=CartItemOut)
 def update_cart_item(item_id: int, item_in: CartItemUpdate, db: Session = Depends(db.get_db)):
