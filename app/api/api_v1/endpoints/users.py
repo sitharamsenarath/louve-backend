@@ -1,7 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, Header, Request, status
+from fastapi import APIRouter, Body, Depends, HTTPException, Header, Request, status
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
+from app.dependencies.firebase_auth import verify_firebase_token
+from app.models.auth import FirebaseSyncRequest
 from app.schemas.user import UserCreate, UserUpdate, UserOut
 from app.services.user import UserService
 from app.dependencies import db
@@ -37,41 +39,19 @@ def update_user(user_id: int, user_in: UserUpdate, db: Session = Depends(db.get_
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
-# @router.post("/auth/login")
-# async def firebase_login(
-#     request: Request,
-#     authorization: Optional[str] = Header(None),
-#     db: Session = Depends(db.get_db)
-# ):
-#     if not authorization.startswith("Bearer "):
-#         raise HTTPException(status_code=401, detail="Invalid token format")
+@router.post("/users/firebase-sync", response_model=dict)
+def sync_firebase_user(
+    request: FirebaseSyncRequest = Body(...),
+    db: Session = Depends(db.get_db),
+    decoded_token: dict = Depends(verify_firebase_token),
+):
+    email = decoded_token["email"]
+    name = request.name or decoded_token.get("name") or "User"
+    provider = "firebase"
 
-#     token = authorization.split(" ")[1]
+    existing_user = service.get_user_by_email(db, email)
+    if existing_user:
+        return {"message": "User already exists"}
 
-#     try:
-#         decoded = firebase_auth.verify_id_token(token)
-#         email = decoded["email"]
-#         firebase_name = decoded.get("name", "")
-#     except Exception:
-#         raise HTTPException(status_code=401, detail="Invalid Firebase token")
-
-#     body = await request.json()
-#     print("Parsed body:", body)
-#     body_name = body.get("name", "")
-
-#     name = body_name or firebase_name or email.split("@")[0]
-
-#     print("Body name:", body_name)
-#     print("Firebase name:", firebase_name)
-#     print("Final name used:", name)
-
-#     user = UserService.get_user_by_email(db, email)
-#     if not user:
-#         user = UserService.create_firebase_user(db, email=email, name=name)
-
-#     return {
-#         "id": user.id,
-#         "email": user.email,
-#         "name": user.name,
-#         "provider": user.provider
-#     }
+    service.crud.create(db, UserCreate(email=email, name=name, provider=provider))
+    return {"message": "User created"}

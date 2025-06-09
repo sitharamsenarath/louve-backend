@@ -27,8 +27,3 @@ class UserService:
         if not user:
             return None
         return self.crud.update(db, user, user_in)
-
-    def create_firebase_user(self, db: Session, email: str, name: str):
-        user_data = UserCreate(email=email, name=name, password="")
-        print("Creating Firebase user with name:", name)
-        return self.crud.create(db, user_data)
